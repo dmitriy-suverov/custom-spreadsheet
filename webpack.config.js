@@ -8,6 +8,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
+
 function optimization() {
   const config = {
     splitChunks: {
@@ -19,6 +20,22 @@ function optimization() {
     config.minimizer = [new TerserPlugin(), new OptimizeCSSAssetsPlugin()];
   }
   return config;
+}
+
+function jsLoaders() {
+  const loaders = [
+    {
+      loader: "babel-loader",
+      options: {
+        presets: ["@babel/preset-env"]
+      }
+    }
+  ];
+
+  if (!isDev) {
+    loaders.push("eslint-loader");
+  }
+  return loaders;
 }
 
 module.exports = {
@@ -39,12 +56,7 @@ module.exports = {
       {
         test: /\.js$i/,
         exclude: /node_modules/,
-        loader: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env"]
-          }
-        }
+        use: jsLoaders()
       },
       //   {
       //     test: /\.ts$/i,
