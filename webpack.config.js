@@ -27,7 +27,8 @@ function jsLoaders() {
     {
       loader: "babel-loader",
       options: {
-        presets: ["@babel/preset-env"]
+        presets: ["@babel/preset-env"],
+        plugins: ["@babel/plugin-proposal-class-properties"]
       }
     }
   ];
@@ -40,29 +41,37 @@ function jsLoaders() {
 
 module.exports = {
   context: resolve(__dirname, "src"),
-  entry: "./index.js",
+  mode: process.env.NODE_ENV,
+  entry: ["@babel/polyfill", "./index.ts"],
   output: {
     path: resolve(__dirname, "dist"),
     filename: "bundle_[hash].js"
   },
+  resolve: {
+    extensions: [".ts", ".js"],
+    alias: {
+      "~": resolve(__dirname, "src"),
+      "~/core": resolve(__dirname, "src/core")
+    }
+  },
+  devtool: isDev ? "source-map" : false,
   devServer: {
     port: 4200,
     hot: isDev
   },
   // optimization: optimization(),
-  devtool: isDev ? "source-map" : false,
   module: {
     rules: [
       {
-        test: /\.js$i/,
+        test: /\.js$/i,
         exclude: /node_modules/,
         use: jsLoaders()
       },
-      //   {
-      //     test: /\.ts$/i,
-      //     use: "ts-loader",
-      //     exclude: /node_modules/
-      //   },
+      {
+        test: /\.ts$/i,
+        use: "ts-loader",
+        exclude: /node_modules/
+      },
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
@@ -93,13 +102,7 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    extensions: [".ts", ".js"],
-    alias: {
-      "@": resolve(__dirname, "src"),
-      "@core": resolve(__dirname, "src/core")
-    }
-  },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: "./index.html",
