@@ -1,7 +1,18 @@
-import { ExcelComponent } from "../../core/ExcelComponent";
+import { AppComponent } from "../../core/AppComponent";
 
-export class Toolbar extends ExcelComponent {
+export class Toolbar extends AppComponent {
   static className = "excel__toolbar";
+
+  constructor($root) {
+    super($root, {
+      name: "Toolbar",
+      listeners: ["click"]
+    });
+  }
+
+  onClick(event) {
+    console.log(event.target);
+  }
 
   toHTML() {
     return `

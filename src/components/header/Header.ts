@@ -1,8 +1,14 @@
-import { ExcelComponent } from "../../core/ExcelComponent";
+import { AppComponent } from "../../core/AppComponent";
+import { Dom } from "../../core/dom";
 
-export class Header extends ExcelComponent {
+export class Header extends AppComponent {
   static className = "excel__header";
-
+  constructor($root: Dom) {
+    super($root, {
+      listeners: ["input", "click"]
+    });
+    console.log();
+  }
   toHTML() {
     return `
     <input type="text" class="input" value="Новая таблица" />

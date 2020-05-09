@@ -42,7 +42,7 @@ function jsLoaders() {
 module.exports = {
   context: resolve(__dirname, "src"),
   mode: process.env.NODE_ENV,
-  entry: ["@babel/polyfill", "./index.js"],
+  entry: ["@babel/polyfill", "./index.ts"],
   output: {
     path: resolve(__dirname, "dist"),
     filename: "bundle_[hash].js"
@@ -50,8 +50,8 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
-      "@": resolve(__dirname, "src"),
-      "@core": resolve(__dirname, "src/core")
+      "~": resolve(__dirname, "src"),
+      "~/core": resolve(__dirname, "src/core")
     }
   },
   devtool: isDev ? "source-map" : false,
@@ -67,18 +67,18 @@ module.exports = {
         exclude: /node_modules/,
         use: jsLoaders()
       },
-      //   {
-      //     test: /\.ts$/i,
-      //     use: "ts-loader",
-      //     exclude: /node_modules/
-      //   },
+      {
+        test: /\.ts$/i,
+        use: "ts-loader",
+        exclude: /node_modules/
+      },
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
           isDev
             ? "style-loader"
             : {
-                loader: MiniCssExtractPlugin. loader,
+                loader: MiniCssExtractPlugin.loader,
                 options: {
                   hmr: isDev,
                   reloadAll: true
