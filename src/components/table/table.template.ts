@@ -3,34 +3,41 @@ const codes = {
   Z: 90
 };
 
-function createCell(content: string = ""): string {
+function createCell(content: string = "", colIdx: string): string {
   return `
-    <div class="cell" contenteditable="">${content}</div>
+    <div class="cell" contenteditable="" data-column-index="${colIdx}">${content}</div>
     `;
 }
 
 function createCellsForRow(colsCount: number): string {
   const cols = [];
   for (let i = 0; i < colsCount; i++) {
-    cols.push(createCell(""));
+    cols.push(createCell("", String.fromCharCode(codes.A + i)));
   }
   return cols.join("");
 }
 
 function createRow(number: number | string, content: string): string {
+  const resize = number
+    ? '<div class="row-resize" data-resize="row"></div>'
+    : "";
   return `
-    <div class="row">
-        <div class="row-info">${number}</div>
+      <div class="row" data-type="resizable">
+        <div class="row-info">
+          ${number}
+          ${resize}
+        </div>
         <div class="row-data">${content}</div>
-    </div>
+      </div>
     `;
 }
 
 function generateColumnTitle(colsCount: number) {
   function createCol(title: string): string {
     return `
-          <div class="column">
+          <div class="column" data-type="resizable" data-column-index="${title}">
               ${title}
+              <div class="col-resize" data-resize="col"></div>
           </div>
           `;
   }
