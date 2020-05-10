@@ -80,6 +80,31 @@ export class Dom {
     this.$el.classList.remove(className);
   }
 
+  public focus() {
+    this.$el.focus();
+    return this;
+  }
+
+  public blur() {
+    this.$el.blur();
+    return this;
+  }
+
+  /**
+   * Table cell identifier
+   */
+  get id(): string {
+    return this.$el.dataset.id;
+  }
+
+  get coords(): { col: number; row: number } {
+    const id = this.id;
+    const [x, y] = id.split(":");
+    return {
+      col: +x,
+      row: +y
+    };
+  }
 }
 
 // event.target

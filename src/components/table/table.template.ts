@@ -1,4 +1,4 @@
-const codes = { 
+const codes = {
   A: 65,
   Z: 90
 };
@@ -13,7 +13,7 @@ function createCell(
      data-type="cell"
      contenteditable="" 
      data-col="${colIdx}" 
-     data-id="${rowIdx}:${colIdx}"
+     data-id="${colIdx}:${rowIdx}"
      >
       ${content}
      </div>
