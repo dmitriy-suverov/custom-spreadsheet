@@ -4,7 +4,7 @@ import { getMethodName } from "./utils";
 export class DomListener {
   protected name: string;
 
-  constructor(private readonly $root: Dom, private readonly listeners = []) {
+  constructor(protected readonly $root: Dom, private readonly listeners = []) {
     if (!$root) {
       throw new Error("$root is not provided");
     }
