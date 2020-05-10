@@ -71,6 +71,15 @@ export class Dom {
       this.$el.style[key] = styles[key];
     });
   }
+
+  public addClass(className: string): void {
+    this.$el.classList.add(className);
+  }
+
+  public removeClass(className: string): void {
+    this.$el.classList.remove(className);
+  }
+
 }
 
 // event.target

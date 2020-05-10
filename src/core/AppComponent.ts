@@ -14,8 +14,10 @@ export abstract class AppComponent extends DomListener {
   ) {
     super($root, options.listeners || []);
     this.name = options.name || this.constructor.prototype.constructor.name;
-    console.log("AppComponent -> this.name", this.name);
+    this.prepare();
   }
+
+  protected prepare() {}
 
   /**
    * returns html representation of the component
