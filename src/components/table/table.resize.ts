@@ -8,7 +8,9 @@ export function resizeHandler($root: Dom, resizeItem: "col" | "row") {
   const startCoords = $parent.getCoords();
 
   const columnSymbol = $parent.$el.dataset["columnIndex"];
-  const columnCells = $root.findAll(`[data-column-index="${columnSymbol}"]`);
+  console.log("resizeHandler -> $parent.$el.dataset", $parent.$el.dataset);
+  console.log("resizeHandler -> columnSymbol", columnSymbol);
+  const columnCells = $root.findAll(`[data-col="${columnSymbol}"]`);
 
   let newValue: string;
   document.onmousemove = (e: MouseEvent) => {

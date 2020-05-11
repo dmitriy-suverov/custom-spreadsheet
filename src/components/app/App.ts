@@ -1,5 +1,6 @@
-import { AppComponent } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $ } from "../../core/dom";
+import { Emmiter as AppEmitter } from "../../core/Emitter";
 
 export interface Type<T extends AppComponent> {
   new (...args: any[]): T;
@@ -9,6 +10,7 @@ export class App {
   private readonly $el: ReturnType<typeof $>;
   private readonly components: Type<AppComponent>[];
   private componentsInstances: AppComponent[];
+  private readonly emmiter: AppEmitter;
   constructor(
     selector: string,
     options: {
@@ -17,15 +19,19 @@ export class App {
   ) {
     this.$el = $(selector);
     this.components = options.components || [];
+    this.emmiter = new AppEmitter();
   }
 
   getRoot() {
     const $root = $.create("div", "excel");
 
+    const componentOptions: Partial<AppComponentOptions> = Object.freeze({
+      emmiter: this.emmiter
+    });
     this.componentsInstances = this.components.map(Component => {
-      // @ts-ignore
+      // @ts-ignore Component.className is static, and is always present
       const $el = $.create("div", Component.className);
-      const component = new Component($el);
+      const component = new Component($el, componentOptions);
       $el.html(component.toHTML());
       $root.append($el);
       return component;
@@ -48,7 +54,6 @@ export class App {
   }
 
   public exit() {
-    console.log("App -> exit -> exit");
     this.onExit();
   }
 }
