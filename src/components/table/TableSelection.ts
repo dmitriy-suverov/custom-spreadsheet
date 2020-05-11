@@ -4,14 +4,14 @@ const selectedCellClass = "selected";
 
 export class TableSelection {
   private group: Dom[] = [];
-  private _current: Dom | null = null;
+  public current: Dom | null = null;
 
   public select($el: Dom) {
     this.clear();
     $el.focus()
     $el.addClass(selectedCellClass);
     this.group.push($el);
-    this._current = $el;
+    this.current = $el;
   }
 
   private clear() {
@@ -25,7 +25,7 @@ export class TableSelection {
     this.group.forEach($el => $el.addClass(selectedCellClass));
   }
 
-  get current() {
-    return this._current;
-  }
+  // get current() {
+  //   return this._current;
+  // }
 }

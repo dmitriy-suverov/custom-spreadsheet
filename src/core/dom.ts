@@ -15,6 +15,23 @@ export class Dom {
     return this.$el.outerHTML.trim();
   }
 
+  public text(text: string | undefined = undefined): this | string {
+    if (typeof text === "string") {
+      if (this.$el.tagName.toLowerCase() === "input") {
+        (this.$el as HTMLInputElement).value = text;
+      } else {
+        this.$el.textContent = text;
+      }
+      return this;
+    }
+
+    if (this.$el.tagName.toLowerCase() === "input") {
+      return (this.$el as HTMLInputElement).value.trim();
+    }
+
+    return this.$el.textContent.trim();
+  }
+
   public clear(): this {
     this.html("");
     return this;

@@ -1,4 +1,4 @@
-import { AppComponent } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $, Dom } from "../../core/dom";
 import { createTable } from "./table.template";
 import { resizeHandler } from "./table.resize";
@@ -13,15 +13,17 @@ const keysToProcess = [
   "ArrowDown"
 ] as const;
 
+export type TABLE_EVENTS = "table:select" | "table:input";
 type SupportableKeys = typeof keysToProcess[number];
 
 export class Table extends AppComponent {
   static className = "excel__table";
   selection: TableSelection;
 
-  constructor($root: Dom) {
+  constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
-      listeners: ["mousedown", "click", "keydown", "keypress"]
+      listeners: ["mousedown", "click", "keydown", "keypress", "input"],
+      ...options
     });
   }
 
@@ -32,7 +34,28 @@ export class Table extends AppComponent {
   init() {
     super.init();
     const $cell = this.$root.find('[data-id="0:0"]');
+    this.selectCell($cell);
+
+    this.on("formula:input", text => this.selection.current.text(text));
+    this.on("formula:end-of-input", () => {
+      this.selection.current.focus();
+      function moveCursorToEnd(el) {
+        if (typeof el.selectionStart == "number") {
+          el.selectionStart = el.selectionEnd = el.value.length;
+        } else if (typeof el.createTextRange != "undefined") {
+          el.focus();
+          const range = el.createTextRange();
+          range.collapse(false);
+          range.select();
+        }
+      }
+      moveCursorToEnd(this.selection.current.$el);
+    });
+  }
+
+  selectCell($cell: Dom) {
     this.selection.select($cell);
+    this.emit("table:select", $cell.text());
   }
 
   toHTML() {
@@ -61,7 +84,13 @@ export class Table extends AppComponent {
       this.selection.selectGroup($cells);
     } else {
       this.selection.select($targetCell);
+      this.emit("table:select", this.selection.current.text());
     }
+  }
+
+  onInput(event: KeyboardEvent) {
+    const target = event.target as HTMLInputElement;
+    this.emit("table:input", target.textContent);
   }
 
   private getCellsToSelect($targetCell: Dom) {
@@ -81,15 +110,12 @@ export class Table extends AppComponent {
     return event.shiftKey;
   }
 
-  // onKeypress(event: KeyboardEvent) {
   onKeydown(event: KeyboardEvent) {
     const key = event.key as SupportableKeys;
-    console.log("Table -> onKeypress -> key", key);
-    console.log("Table -> onKeydown -> event.shiftKey", event.shiftKey);
     if (keysToProcess.includes(key) && !event.shiftKey) {
-      const $next = this.getNextCell(key, this.selection.current.coords);
-      this.selection.select($next);
       event.preventDefault();
+      const $next = this.getNextCell(key, this.selection.current.coords);
+      this.selectCell($next);
     }
   }
 

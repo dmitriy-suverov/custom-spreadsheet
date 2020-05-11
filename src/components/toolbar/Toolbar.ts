@@ -1,17 +1,14 @@
-import { AppComponent } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import { Dom } from "../../core/dom";
 
 export class Toolbar extends AppComponent {
   static className = "excel__toolbar";
 
-  constructor($root) {
+  constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
-      name: "Toolbar",
-      listeners: ["click"]
+      listeners: ["click"],
+      ...options
     });
-  }
-
-  onClick(event) {
-    console.log(event.target);
   }
 
   toHTML() {

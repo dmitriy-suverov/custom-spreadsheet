@@ -1,11 +1,12 @@
-import { AppComponent } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { Dom } from "../../core/dom";
 
 export class Header extends AppComponent {
   static className = "excel__header";
-  constructor($root: Dom) {
+  constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
-      listeners: ["input", "click"]
+      listeners: ["input", "click"],
+      ...options
     });
     console.log();
   }
