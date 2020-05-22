@@ -12,7 +12,7 @@ export class Header extends AppComponent {
   }
   toHTML() {
     return `
-    <input type="text" class="input" value="Новая таблица" />
+    <input type="text" class="input" value="New table" />
 
     <div>
       <div class="button">

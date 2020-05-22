@@ -1,9 +1,16 @@
 import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $ } from "../../core/dom";
 import { Emmiter as AppEmitter } from "../../core/Emitter";
+import { Store } from "../../core/Store";
 
+// evaluates type as Class itself, not instance of T
 export interface Type<T extends AppComponent> {
   new (...args: any[]): T;
+}
+
+interface AppOptions {
+  components: Type<AppComponent>[];
+  store: Store;
 }
 
 export class App {
@@ -11,14 +18,12 @@ export class App {
   private readonly components: Type<AppComponent>[];
   private componentsInstances: AppComponent[];
   private readonly emmiter: AppEmitter;
-  constructor(
-    selector: string,
-    options: {
-      components: Type<AppComponent>[];
-    } = { components: [] }
-  ) {
+  private readonly store: Store;
+
+  constructor(selector: string, options: AppOptions) {
     this.$el = $(selector);
     this.components = options.components || [];
+    this.store = options.store;
     this.emmiter = new AppEmitter();
   }
 
@@ -26,7 +31,8 @@ export class App {
     const $root = $.create("div", "excel");
 
     const componentOptions: Partial<AppComponentOptions> = Object.freeze({
-      emmiter: this.emmiter
+      emmiter: this.emmiter,
+      store: this.store
     });
     this.componentsInstances = this.components.map(Component => {
       // @ts-ignore Component.className is static, and is always present
