@@ -28,7 +28,7 @@ export class Table extends AppComponent {
     });
   }
 
-  public prepare() {
+  public onBeforeInit() {
     this.selection = new TableSelection();
   }
 

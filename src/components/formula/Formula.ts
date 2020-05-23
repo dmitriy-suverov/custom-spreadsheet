@@ -1,5 +1,6 @@
 import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $, Dom } from "../../core/dom";
+import { AppState } from "../../core/Store";
 
 export type FORMULA_EVENTS = "formula:input" | "formula:end-of-input";
 
@@ -9,6 +10,7 @@ export class Formula extends AppComponent {
   constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
       listeners: ["input", "click", "keydown"],
+      subscribeToStoreFields: ["currentText"],
       ...options
     });
   }
@@ -46,5 +48,19 @@ export class Formula extends AppComponent {
     <div class="info">fx</div>
     <div class="input" contenteditable spellcheck="false"></div>
     `;
+  }
+
+  storeChanged(changes) {
+    console.log("AppComponent -> storeChanged -> changes", changes);
+  }
+
+  public isSubscribedToField(fieldName: keyof AppState): boolean {
+    // console.log(
+    //   "AppComponent -> isSubscribedToField -> this.fieldsToSubscribeInStore.includes(fieldName)",
+    //   this.name,
+    //   fieldName,
+    //   this.fieldsToSubscribeInStore.includes(fieldName)
+    // );
+    return this.fieldsToSubscribeInStore.includes(fieldName);
   }
 }

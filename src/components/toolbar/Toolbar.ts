@@ -1,7 +1,18 @@
-import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import { AppComponentOptions } from "../../core/AppComponent";
 import { Dom } from "../../core/dom";
+import { createToolbar } from "./toolbar.template";
+import { AppStatefulComponent } from "../../core/AppStatefulComponent";
 
-export class Toolbar extends AppComponent {
+export const initialState = {
+  textAlign: "left",
+  fontWeight: "normal",
+  fontStyle: "normal",
+  textDecoration: "none"
+};
+
+type State = typeof initialState
+
+export class Toolbar extends AppStatefulComponent<State> {
   static className = "excel__toolbar";
 
   constructor($root: Dom, options: AppComponentOptions) {
@@ -11,31 +22,30 @@ export class Toolbar extends AppComponent {
     });
   }
 
+  // move to parent class, use static field for default state
+  onBeforeInit() {
+    this.initState(initialState);
+  }
+
+  get template() {
+    return createToolbar(this.state);
+  }
+
   toHTML() {
-    return `
-          <div class="button">
-            <i class="material-icons">format_align_left</i>
-          </div>
+    return this.template;
+  }
 
-          <div class="button">
-            <i class="material-icons">format_align_center</i>
-          </div>
+  onClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const shouldHandleClick = target.dataset.type === "tb-button";
+    if (!shouldHandleClick) {
+      event.stopPropagation();
+      return;
+    }
 
-          <div class="button">
-            <i class="material-icons">format_align_right</i>
-          </div>
-
-          <div class="button">
-            <i class="material-icons">format_bold</i>
-          </div>
-
-          <div class="button">
-            <i class="material-icons">format_italic</i>
-          </div>
-
-          <div class="button">
-            <i class="material-icons">format_underlined</i>
-          </div>
-    `;
+    const style = JSON.parse(target.dataset.value);
+    const key = Object.keys(style)[0] as keyof State;
+    this.setState({ [key]: style[key] });
+    console.log(this.state);
   }
 }

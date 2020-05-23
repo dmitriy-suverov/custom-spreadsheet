@@ -3,6 +3,7 @@ import {
   resizeAction,
   changeTextAction
 } from "../components/table/table.actions";
+import { renameTableAction } from "../components/header/header.actions";
 
 export function rootReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -30,13 +31,25 @@ export function rootReducer(state: AppState, action: AppAction): AppState {
     case "CHANGE_TEXT": {
       const newState = { ...state };
       const data = (action as ReturnType<typeof changeTextAction>).payload;
-      console.log("functionrootReducer -> data", data);
       newState.cellData = {
         ...state.cellData,
         ...data
       };
+      const key = Object.keys(data)[0];
+      newState.currentText = data[key];
 
       return newState;
+    }
+
+    case "RENAME_TABLE": {
+      const { newName } = (action as ReturnType<
+        typeof renameTableAction
+      >).payload;
+
+      return {
+        ...state,
+        tableName: newName
+      };
     }
   }
 

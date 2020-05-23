@@ -2,6 +2,7 @@ import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $ } from "../../core/dom";
 import { Emmiter as AppEmitter } from "../../core/Emitter";
 import { Store } from "../../core/Store";
+import { StoreSubscriber } from "../../core/StoreSubscriber";
 
 // evaluates type as Class itself, not instance of T
 export interface Type<T extends AppComponent> {
@@ -19,12 +20,14 @@ export class App {
   private componentsInstances: AppComponent[];
   private readonly emmiter: AppEmitter;
   private readonly store: Store;
+  private readonly subsriber: StoreSubscriber;
 
   constructor(selector: string, options: AppOptions) {
     this.$el = $(selector);
     this.components = options.components || [];
     this.store = options.store;
     this.emmiter = new AppEmitter();
+    this.subsriber = new StoreSubscriber(this.store)
   }
 
   getRoot() {
@@ -48,6 +51,7 @@ export class App {
 
   private render() {
     this.$el.append(this.getRoot());
+    this.subsriber.subscribeComponents(this.componentsInstances)
   }
 
   public run() {
@@ -57,6 +61,7 @@ export class App {
 
   private onExit() {
     this.componentsInstances.forEach(instance => instance.destroy());
+    this.subsriber.unsubscrubeFromStore();
   }
 
   public exit() {

@@ -7,9 +7,8 @@ export const DEFAULT_STATE: AppState = {
   },
   cellData: {},
   selectedCellId: `0:0`,
-  formula: {
-    content: ""
-  }
+  currentText: "",
+  tableName: "New table"
 };
 
 export function createStore(

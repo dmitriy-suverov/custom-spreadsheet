@@ -13,3 +13,10 @@ export function getFromStorage<T = any>(key: string): T {
 export function setToStorage(key: string, value: any): void {
   localStorage.setItem(key, JSON.stringify(value));
 }
+
+export function isEqual(first: any, second: any): boolean {
+  if (typeof first === "object" && typeof second === "object") {
+    return JSON.stringify(first) === JSON.stringify(second);
+  }
+  return first === second;
+}

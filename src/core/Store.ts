@@ -1,7 +1,8 @@
 import { TABLE_ACTIONS } from "../components/table/table.actions";
+import { HEADER_ACTIONS } from "../components/header/header.actions";
 
 export interface AppAction {
-  type: "__INIT__" | TABLE_ACTIONS;
+  type: "__INIT__" | TABLE_ACTIONS | HEADER_ACTIONS;
   payload?: any;
 }
 
@@ -20,10 +21,9 @@ export type AppState = {
     rowState: { [key: string]: number };
   };
   cellData: { [key: string]: string };
-  formula: {
-    content: string;
-  };
+  currentText: string;
   selectedCellId: string;
+  tableName: string
 };
 
 export class Store {
@@ -62,12 +62,9 @@ export class Store {
   }
   dispatch(action: AppAction) {
     this.state = this.rootReducer({ ...this.state }, action);
-    console.log("Store -> dispatch -> this.state", this.state);
     this.listeners.forEach(listener => listener(this.state));
   }
   getState() {
-    return {
-      ...this.state
-    };
+    return JSON.parse(JSON.stringify(this.state));
   }
 }
