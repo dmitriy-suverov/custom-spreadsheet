@@ -3,6 +3,7 @@ import { $, Dom } from "../../core/dom";
 import { createTable } from "./table.template";
 import { resizeHandler } from "./table.resize";
 import { TableSelection } from "./TableSelection";
+import { resizeAction, changeTextAction } from "./table.actions";
 
 const keysToProcess = [
   "Enter",
@@ -27,11 +28,11 @@ export class Table extends AppComponent {
     });
   }
 
-  prepare() {
+  public onBeforeInit() {
     this.selection = new TableSelection();
   }
 
-  init() {
+  public init() {
     super.init();
     const $cell = this.$root.find('[data-id="0:0"]');
     this.selectCell($cell);
@@ -53,16 +54,21 @@ export class Table extends AppComponent {
     });
   }
 
+  private async resizeTable(event, resizeItem: "col" | "row") {
+    const data = await resizeHandler(this.$root, resizeItem);
+    this.dispatch(resizeAction(data));
+  }
+
   selectCell($cell: Dom) {
     this.selection.select($cell);
     this.emit("table:select", $cell.text());
   }
 
   toHTML() {
-    return createTable(100);
+    return createTable(100, this.store.getState());
   }
 
-  onMousedown(event: MouseEvent) {
+  async onMousedown(event: MouseEvent) {
     const resizeItem = (event.target as HTMLElement).dataset.resize as
       | "col"
       | "row";
@@ -70,7 +76,7 @@ export class Table extends AppComponent {
     if (!resizeItem) {
       return;
     }
-    resizeHandler(this.$root, resizeItem);
+    await this.resizeTable(this.$root, resizeItem);
   }
 
   onClick(event: MouseEvent) {
@@ -91,6 +97,7 @@ export class Table extends AppComponent {
   onInput(event: KeyboardEvent) {
     const target = event.target as HTMLInputElement;
     this.emit("table:input", target.textContent);
+    this.dispatch(changeTextAction({[target.dataset.id]: target.innerText}))
   }
 
   private getCellsToSelect($targetCell: Dom) {

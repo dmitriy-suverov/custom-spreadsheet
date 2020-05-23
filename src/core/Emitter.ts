@@ -12,7 +12,6 @@ export class Emmiter {
       return;
     }
     this.subscribers[eventName].forEach(callback => {
-      console.log("Emmiter -> emit -> eventName", eventName);
       callback(...payload);
     });
   }

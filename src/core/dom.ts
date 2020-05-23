@@ -114,6 +114,10 @@ export class Dom {
     return this.$el.dataset.id;
   }
 
+  get data() {
+    return this.$el.dataset;
+  }
+
   get coords(): { col: number; row: number } {
     const id = this.id;
     const [x, y] = id.split(":");
