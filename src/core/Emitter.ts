@@ -1,7 +1,7 @@
 import { FORMULA_EVENTS } from "../components/formula/Formula";
 import { TABLE_EVENTS } from "../components/table/Table";
 
-export type AppEvents = FORMULA_EVENTS | TABLE_EVENTS;
+export type AppEvents = FORMULA_EVENTS | TABLE_EVENTS | "toolbar:applyStyle";
 
 export class Emmiter {
   private readonly subscribers: Partial<Record<AppEvents, Function[]>> = {};

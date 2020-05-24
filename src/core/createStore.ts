@@ -1,4 +1,5 @@
 import { Store, RootReducerType, AppState } from "./Store";
+import { DEFAULT_STYLES } from "../constants";
 
 export const DEFAULT_STATE: AppState = {
   sizes: {
@@ -6,9 +7,10 @@ export const DEFAULT_STATE: AppState = {
     rowState: {}
   },
   cellData: {},
-  selectedCellId: `0:0`,
   currentText: "",
-  tableName: "New table"
+  tableName: "New table",
+  currentStyles: DEFAULT_STYLES,
+  stylesState: {}
 };
 
 export function createStore(

@@ -1,9 +1,12 @@
 import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $, Dom } from "../../core/dom";
-import { createTable } from "./table.template";
+import { createTable, getCellId } from "./table.template";
 import { resizeHandler } from "./table.resize";
 import { TableSelection } from "./TableSelection";
 import { resizeAction, changeTextAction } from "./table.actions";
+import { DEFAULT_STYLES } from "../../constants";
+import { currentStylesAction, applyStyleAction } from "../../redux/actions";
+import { CellParser } from "../../core/CellParser";
 
 const keysToProcess = [
   "Enter",
@@ -19,11 +22,13 @@ type SupportableKeys = typeof keysToProcess[number];
 
 export class Table extends AppComponent {
   static className = "excel__table";
-  selection: TableSelection;
+  private selection: TableSelection;
+  private cellInput: string = "";
 
   constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
       listeners: ["mousedown", "click", "keydown", "keypress", "input"],
+      subscribeToStoreFields: ["cellData"],
       ...options
     });
   }
@@ -37,7 +42,11 @@ export class Table extends AppComponent {
     const $cell = this.$root.find('[data-id="0:0"]');
     this.selectCell($cell);
 
-    this.on("formula:input", text => this.selection.current.text(text));
+    this.on("formula:input", (text: string) => {
+      this.selection.current
+        .setAttr("data-value", text)
+        .text(CellParser.parse(text));
+    });
     this.on("formula:end-of-input", () => {
       this.selection.current.focus();
       function moveCursorToEnd(el) {
@@ -52,6 +61,11 @@ export class Table extends AppComponent {
       }
       moveCursorToEnd(this.selection.current.$el);
     });
+
+    this.on("toolbar:applyStyle", style => {
+      this.selection.applyStyle(style);
+      this.dispatch(applyStyleAction(this.selection.selectedIds, style));
+    });
   }
 
   private async resizeTable(event, resizeItem: "col" | "row") {
@@ -61,7 +75,14 @@ export class Table extends AppComponent {
 
   selectCell($cell: Dom) {
     this.selection.select($cell);
-    this.emit("table:select", $cell.text());
+    this.emit("table:select", $cell);
+    this.dispatch(
+      currentStylesAction(
+        $cell.getStyles(
+          Object.keys(DEFAULT_STYLES) as (keyof CSSStyleDeclaration)[]
+        )
+      )
+    );
   }
 
   toHTML() {
@@ -89,15 +110,15 @@ export class Table extends AppComponent {
       const $cells = this.getCellsToSelect($targetCell);
       this.selection.selectGroup($cells);
     } else {
-      this.selection.select($targetCell);
-      this.emit("table:select", this.selection.current.text());
+      this.selectCell($targetCell);
     }
   }
 
   onInput(event: KeyboardEvent) {
+    console.log("Table -> onInput -> event", event.keyCode);
     const target = event.target as HTMLInputElement;
     this.emit("table:input", target.textContent);
-    this.dispatch(changeTextAction({[target.dataset.id]: target.innerText}))
+    this.cellInput = target.textContent;
   }
 
   private getCellsToSelect($targetCell: Dom) {
@@ -119,6 +140,13 @@ export class Table extends AppComponent {
 
   onKeydown(event: KeyboardEvent) {
     const key = event.key as SupportableKeys;
+    if (key === "Enter" && this.cellInput !== "") {
+      console.log("Table -> onKeydown -> key ==='Enter'", key === "Enter");
+      this.dispatch(
+        changeTextAction({ [this.selection.current.id]: this.cellInput })
+      );
+      this.cellInput = "";
+    }
     if (keysToProcess.includes(key) && !event.shiftKey) {
       event.preventDefault();
       const $next = this.getNextCell(key, this.selection.current.coords);
@@ -126,32 +154,38 @@ export class Table extends AppComponent {
     }
   }
 
-  private getNextCell(
+   private getNextCell(
     key: SupportableKeys,
-    { col, row }: { col: number; row: number }
+    { col: colIdx,row: rowIdx }: { col: number; row: number }
   ): Dom {
-    switch (key) {
+     switch (key) {
       case "ArrowDown":
-      case "Enter":
-        row++;
+      case "Enter": {
+        rowIdx++;
         break;
+      }
+
       case "ArrowRight":
       case "Tab":
-        col++;
+        colIdx++;
         break;
       case "ArrowLeft":
-        if (col > 0) {
-          col--;
+        if (colIdx > 0) {
+          colIdx--;
         }
         break;
       case "ArrowUp":
-        if (row > 0) {
-          row--;
+        if (rowIdx > 0) {
+          rowIdx--;
         }
         break;
     }
 
-    return this.$root.find(`[data-id="${col}:${row}"`);
+    return this.$root.find(`[data-id="${getCellId(rowIdx, colIdx)}"`);
+  }
+
+  storeChanged() {
+    this.$root.html(this.toHTML());
   }
 }
 
