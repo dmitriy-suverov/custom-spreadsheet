@@ -6,8 +6,8 @@ import { Table } from "./components/table/Table";
 import { Header } from "./components/header/Header";
 import { createStore } from "./core/createStore";
 import { rootReducer } from "./redux/rootReducer";
-import { setToStorage, getFromStorage } from "./core/utils";
-import { Store } from "./core/Store";
+import { setToStorage, getFromStorage, debounce } from "./core/utils";
+import { Store, AppState } from "./core/Store";
 
 const loadedState = getFromStorage(Store.STORAGE_KEY);
 let store;
@@ -16,7 +16,10 @@ if (loadedState) {
 } else {
   store = createStore(rootReducer);
 }
-store.subscribe(state => setToStorage(Store.STORAGE_KEY, state));
+
+(store as Store).subscribe(
+  debounce((state: AppState) => setToStorage(Store.STORAGE_KEY, state), 300)
+);
 
 const excel = new App("#app", {
   components: [Header, Toolbar, Formula, Table],

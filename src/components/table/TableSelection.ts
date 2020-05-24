@@ -6,9 +6,13 @@ export class TableSelection {
   private group: Dom[] = [];
   public current: Dom | null = null;
 
+  get selectedIds() {
+    return this.group.map(cell => cell.id);
+  }
+
   public select($el: Dom) {
     this.clear();
-    $el.focus()
+    $el.focus();
     $el.addClass(selectedCellClass);
     this.group.push($el);
     this.current = $el;
@@ -25,7 +29,7 @@ export class TableSelection {
     this.group.forEach($el => $el.addClass(selectedCellClass));
   }
 
-  // get current() {
-  //   return this._current;
-  // }
+  public applyStyle(newStyle: { [key in keyof CSSStyleDeclaration]: string }) {
+    this.group.forEach(el => el.css(newStyle));
+  }
 }

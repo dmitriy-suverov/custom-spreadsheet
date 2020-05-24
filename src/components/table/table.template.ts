@@ -1,37 +1,49 @@
 import { AppState } from "../../core/Store";
+import { DEFAULT_STYLES } from "../../constants";
+import { camelToDashCase } from "../../core/utils";
+import { CellParser } from "../../core/CellParser";
 
 const codes = {
   A: 65,
   Z: 90
 };
 
-function createCell(
-  content: string = "",
-  colIdx: number,
-  rowIdx: number,
-  width: string | undefined
-): string {
+function createCell(colIdx: number, rowIdx: number, state: AppState): string {
+  const cellId = getCellId(rowIdx, colIdx);
+  const cellStyles = state.stylesState[cellId] || {};
+  const stylesArr = Object.keys(DEFAULT_STYLES).map(
+    key => `${camelToDashCase(key)}:${cellStyles[key] || DEFAULT_STYLES[key]};`
+  );
+  const content = getCellContentFromState(state.cellData, cellId);
+
+  const width = getWidthInPx(state.sizes.colState, colIdx);
+  if (width) {
+    stylesArr.push(`width:${width};`);
+  }
+
   return `
     <div class="cell"
-     data-type="cell"
-     contenteditable="" 
-     data-col="${colIdx}" 
-     data-id="${colIdx}:${rowIdx}"
-     ${width && `style="width:${width}"`}
-
-     >
-      ${content}
-     </div>
+    contenteditable="" 
+    data-col="${colIdx}" 
+    data-type="cell"
+    data-id="${getCellId(rowIdx, colIdx)}"
+    data-value="${content}"
+    style="${stylesArr.join("")}"
+    >
+     ${CellParser.parse(content || "")}
+    </div>
     `;
 }
 
 function getCellContentFromState(
   state: AppState["cellData"],
-  rowIdx: number,
-  colIdx: number
-) {
-  const key = `${rowIdx}:${colIdx}`;
-  return state[key];
+  cellId: string
+): string {
+  return state[cellId] || "";
+}
+
+export function getCellId(rowIdx: number, colIdx: number) {
+  return `${rowIdx}:${colIdx}`;
 }
 
 function createCellsForRow(
@@ -41,15 +53,7 @@ function createCellsForRow(
 ): string {
   const cols = [];
   for (let colIdx = 0; colIdx < colsCount; colIdx++) {
-    const content = getCellContentFromState(state.cellData, colIdx, rowIdx);
-    cols.push(
-      createCell(
-        content,
-        colIdx,
-        rowIdx,
-        getWidthInPx(state.sizes.colState, colIdx)
-      )
-    );
+    cols.push(createCell(colIdx, rowIdx, state));
   }
   return cols.join("");
 }

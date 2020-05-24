@@ -16,7 +16,7 @@ export class Dom {
   }
 
   public text(text: string | undefined = undefined): this | string {
-    if (typeof text === "string") {
+    if (["string", "number"].includes(typeof text)) {
       if (this.$el.tagName.toLowerCase() === "input") {
         (this.$el as HTMLInputElement).value = text;
       } else {
@@ -107,6 +107,26 @@ export class Dom {
     return this;
   }
 
+  public getStyles(
+    styles: (keyof CSSStyleDeclaration)[] = []
+  ): Record<keyof CSSStyleDeclaration, any> {
+    const result = {} as any;
+    styles.forEach(style => {
+      result[style] = this.$el.style[style];
+    });
+
+    return result;
+  }
+
+  public getAttr(name: string) {
+    return this.$el.getAttribute(name);
+  }
+
+  public setAttr(name: string, value: string) {
+    this.$el.setAttribute(name, value);
+    return this;
+  }
+
   /**
    * Table cell identifier
    */
@@ -120,10 +140,11 @@ export class Dom {
 
   get coords(): { col: number; row: number } {
     const id = this.id;
-    const [x, y] = id.split(":");
+    const [row, col] = id.split(":").map(val => +val);
+    console.log("Dom -> getcoords -> [row, col]", id, [row, col]);
     return {
-      col: +x,
-      row: +y
+      col,
+      row
     };
   }
 }
