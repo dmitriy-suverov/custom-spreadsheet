@@ -1,8 +1,9 @@
 import { TABLE_ACTIONS } from "../components/table/table.actions";
 import { HEADER_ACTIONS } from "../components/header/header.actions";
+import { TOOLBAR_ACTIONS } from "../redux/actions";
 
 export interface AppAction {
-  type: "__INIT__" | TABLE_ACTIONS | HEADER_ACTIONS;
+  type: "__INIT__" | TABLE_ACTIONS | HEADER_ACTIONS | TOOLBAR_ACTIONS;
   payload?: any;
 }
 
@@ -22,8 +23,16 @@ export type AppState = {
   };
   cellData: { [key: string]: string };
   currentText: string;
+  currentStyles: {
+    [key in keyof CSSStyleDeclaration]?: string;
+  };
   selectedCellId: string;
-  tableName: string
+  tableName: string;
+  stylesState: {
+    [cellId: string]: {
+      [styleName in keyof CSSStyleDeclaration]?: string;
+    };
+  };
 };
 
 export class Store {

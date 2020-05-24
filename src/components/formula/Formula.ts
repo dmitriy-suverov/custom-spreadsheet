@@ -18,8 +18,8 @@ export class Formula extends AppComponent {
   init() {
     super.init();
     const $input = this.$root.find(".input");
-    this.on("table:select", (text: string) => {
-      $input.text(text);
+    this.on("table:select", ($cell: Dom) => {
+      $input.text($cell.data.value);
     });
     this.on("table:input", text => $input.text(text));
   }

@@ -4,6 +4,9 @@ import { createTable } from "./table.template";
 import { resizeHandler } from "./table.resize";
 import { TableSelection } from "./TableSelection";
 import { resizeAction, changeTextAction } from "./table.actions";
+import { DEFAULT_STYLES } from "../../constants";
+import { currentStylesAction, applyStyleAction } from "../../redux/actions";
+import { CellParser } from "../../core/CellParser";
 
 const keysToProcess = [
   "Enter",
@@ -19,11 +22,12 @@ type SupportableKeys = typeof keysToProcess[number];
 
 export class Table extends AppComponent {
   static className = "excel__table";
-  selection: TableSelection;
+  private selection: TableSelection;
 
   constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
       listeners: ["mousedown", "click", "keydown", "keypress", "input"],
+      subscribeToStoreFields:['cellData'],
       ...options
     });
   }
@@ -37,7 +41,11 @@ export class Table extends AppComponent {
     const $cell = this.$root.find('[data-id="0:0"]');
     this.selectCell($cell);
 
-    this.on("formula:input", text => this.selection.current.text(text));
+    this.on("formula:input", (text: string) => {
+      this.selection.current
+        .setAttr("data-value", text)
+        .text(CellParser.parse(text));
+    });
     this.on("formula:end-of-input", () => {
       this.selection.current.focus();
       function moveCursorToEnd(el) {
@@ -52,6 +60,11 @@ export class Table extends AppComponent {
       }
       moveCursorToEnd(this.selection.current.$el);
     });
+
+    this.on("toolbar:applyStyle", style => {
+      this.selection.applyStyle(style);
+      this.dispatch(applyStyleAction(this.selection.selectedIds, style));
+    });
   }
 
   private async resizeTable(event, resizeItem: "col" | "row") {
@@ -61,7 +74,14 @@ export class Table extends AppComponent {
 
   selectCell($cell: Dom) {
     this.selection.select($cell);
-    this.emit("table:select", $cell.text());
+    this.emit("table:select", $cell);
+    this.dispatch(
+      currentStylesAction(
+        $cell.getStyles(
+          Object.keys(DEFAULT_STYLES) as (keyof CSSStyleDeclaration)[]
+        )
+      )
+    );
   }
 
   toHTML() {
@@ -89,15 +109,14 @@ export class Table extends AppComponent {
       const $cells = this.getCellsToSelect($targetCell);
       this.selection.selectGroup($cells);
     } else {
-      this.selection.select($targetCell);
-      this.emit("table:select", this.selection.current.text());
+      this.selectCell($targetCell);
     }
   }
 
   onInput(event: KeyboardEvent) {
     const target = event.target as HTMLInputElement;
     this.emit("table:input", target.textContent);
-    this.dispatch(changeTextAction({[target.dataset.id]: target.innerText}))
+    this.dispatch(changeTextAction({ [target.dataset.id]: target.innerText }));
   }
 
   private getCellsToSelect($targetCell: Dom) {
@@ -130,10 +149,11 @@ export class Table extends AppComponent {
     key: SupportableKeys,
     { col, row }: { col: number; row: number }
   ): Dom {
+    console.log("Table -> row", row);
     switch (key) {
       case "ArrowDown":
       case "Enter":
-        row++;
+        col++;
         break;
       case "ArrowRight":
       case "Tab":
@@ -152,6 +172,10 @@ export class Table extends AppComponent {
     }
 
     return this.$root.find(`[data-id="${col}:${row}"`);
+  }
+
+  storeChanged(){
+    
   }
 }
 

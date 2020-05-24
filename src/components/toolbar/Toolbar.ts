@@ -2,15 +2,9 @@ import { AppComponentOptions } from "../../core/AppComponent";
 import { Dom } from "../../core/dom";
 import { createToolbar } from "./toolbar.template";
 import { AppStatefulComponent } from "../../core/AppStatefulComponent";
+import { DEFAULT_STYLES } from "../../constants";
 
-export const initialState = {
-  textAlign: "left",
-  fontWeight: "normal",
-  fontStyle: "normal",
-  textDecoration: "none"
-};
-
-type State = typeof initialState
+type State = typeof DEFAULT_STYLES;
 
 export class Toolbar extends AppStatefulComponent<State> {
   static className = "excel__toolbar";
@@ -18,13 +12,14 @@ export class Toolbar extends AppStatefulComponent<State> {
   constructor($root: Dom, options: AppComponentOptions) {
     super($root, {
       listeners: ["click"],
+      subscribeToStoreFields: ["currentStyles"],
       ...options
     });
   }
 
   // move to parent class, use static field for default state
   onBeforeInit() {
-    this.initState(initialState);
+    this.initState(DEFAULT_STYLES);
   }
 
   get template() {
@@ -46,6 +41,10 @@ export class Toolbar extends AppStatefulComponent<State> {
     const style = JSON.parse(target.dataset.value);
     const key = Object.keys(style)[0] as keyof State;
     this.setState({ [key]: style[key] });
-    console.log(this.state);
+    this.emit("toolbar:applyStyle", style);
+  }
+
+  storeChanged(changes) {
+    this.setState(changes.currentStyles);
   }
 }

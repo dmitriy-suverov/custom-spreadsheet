@@ -1,4 +1,4 @@
-import { initialState } from "./Toolbar";
+import { DEFAULT_STYLES } from "../../constants";
 
 interface ToolbarButton {
   icon: string;
@@ -7,11 +7,12 @@ interface ToolbarButton {
     textAlign?: "left" | "center" | "right";
     fontWeight?: "bold" | "normal";
     fontStyle?: "italic" | "normal";
-    textDecoration?: "underlined" | "none";
+    textDecoration?: "underline" | "none";
   };
 }
 
-export function createToolbar(state: typeof initialState) {
+export function createToolbar(state: typeof DEFAULT_STYLES) {
+  console.log("createToolbar -> state", state)
   const buttons: ToolbarButton[] = [
     {
       icon: "format_align_left",
@@ -50,10 +51,10 @@ export function createToolbar(state: typeof initialState) {
     },
     {
       icon: "format_underlined",
-      isActive: state["textDecoration"] === "underlined",
+      isActive: state["textDecoration"] === "underline",
       value: {
         textDecoration:
-          state["textDecoration"] !== "underlined" ? "underlined" : "none"
+          state["textDecoration"] !== "underline" ? "underline" : "none"
       }
     }
   ];
