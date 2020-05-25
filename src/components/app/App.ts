@@ -15,19 +15,24 @@ interface AppOptions {
 }
 
 export class App {
-  private readonly $el: ReturnType<typeof $>;
   private readonly components: Type<AppComponent>[];
   private componentsInstances: AppComponent[];
   private readonly emmiter: AppEmitter;
   private readonly store: Store;
   private readonly subsriber: StoreSubscriber;
 
-  constructor(selector: string, options: AppOptions) {
-    this.$el = $(selector);
+  private static tableId: number;
+
+  public static get tableStorageKey(): string {
+    return `${Store.STORAGE_KEY}/${App.tableId}`;
+  }
+
+  constructor(tableId: number, options: AppOptions) {
     this.components = options.components || [];
     this.store = options.store;
     this.emmiter = new AppEmitter();
-    this.subsriber = new StoreSubscriber(this.store)
+    this.subsriber = new StoreSubscriber(this.store);
+    App.tableId = tableId;
   }
 
   getRoot() {
@@ -49,22 +54,14 @@ export class App {
     return $root;
   }
 
-  private render() {
-    this.$el.append(this.getRoot());
-    this.subsriber.subscribeComponents(this.componentsInstances)
-  }
-
-  public run() {
-    this.render();
+  public init() {
+    this.subsriber.subscribeComponents(this.componentsInstances);
     this.componentsInstances.forEach(instance => instance.init());
   }
 
-  private onExit() {
+  // todo rename
+  public onDestroy() {
     this.componentsInstances.forEach(instance => instance.destroy());
     this.subsriber.unsubscrubeFromStore();
-  }
-
-  public exit() {
-    this.onExit();
   }
 }

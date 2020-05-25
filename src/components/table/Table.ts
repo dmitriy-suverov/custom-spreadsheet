@@ -105,6 +105,14 @@ export class Table extends AppComponent {
     if (target.dataset.type !== "cell") {
       return;
     }
+    // todo wrap to function Cell::update-data-value
+    if (this.cellInput != "") {
+      this.dispatch(
+        changeTextAction({ [this.selection.current.id]: this.cellInput })
+      );
+      this.cellInput = "";
+    }
+
     const $targetCell = $(target);
     if (this.isMultipleSelection(event)) {
       const $cells = this.getCellsToSelect($targetCell);
@@ -115,8 +123,8 @@ export class Table extends AppComponent {
   }
 
   onInput(event: KeyboardEvent) {
-    console.log("Table -> onInput -> event", event.keyCode);
     const target = event.target as HTMLInputElement;
+    console.log("Table -> onInput -> target", target.textContent);
     this.emit("table:input", target.textContent);
     this.cellInput = target.textContent;
   }
@@ -128,7 +136,7 @@ export class Table extends AppComponent {
     const rows = range(startCoords.row, endCoords.row);
     const ids = [];
     cols.forEach(col => {
-      rows.forEach(row => ids.push(`${col}:${row}`));
+      rows.forEach(row => ids.push(getCellId(row, col)));
     }, []);
     const $cells = ids.map(id => this.$root.find(`[data-id="${id}"]`));
     return $cells;
@@ -154,11 +162,11 @@ export class Table extends AppComponent {
     }
   }
 
-   private getNextCell(
+  private getNextCell(
     key: SupportableKeys,
-    { col: colIdx,row: rowIdx }: { col: number; row: number }
+    { col: colIdx, row: rowIdx }: { col: number; row: number }
   ): Dom {
-     switch (key) {
+    switch (key) {
       case "ArrowDown":
       case "Enter": {
         rowIdx++;

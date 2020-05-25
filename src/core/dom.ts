@@ -7,7 +7,8 @@ export class Dom {
         : selector;
   }
 
-  public html(html: string | undefined): this | string {
+  // todo get-set
+  public html(html?: string | undefined): this | string {
     if (typeof html === "string") {
       this.$el.innerHTML = html;
       return this;
