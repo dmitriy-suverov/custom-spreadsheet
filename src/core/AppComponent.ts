@@ -49,16 +49,12 @@ export abstract class AppComponent extends DomListener {
     this.unsubscribers.push(this.emitter.subscribe(event, cb));
   }
 
-  public unsubscribeAll() {
-    this.unsubscribers.forEach(unsubFn => unsubFn());
-  }
-
   public dispatch(action: AppAction): void {
     this.store.dispatch(action);
   }
 
   storeChanged(changes) {
-    console.log("AppComponent -> storeChanged -> changes", changes);
+    console.debug("AppComponent -> storeChanged -> changes", changes);
   }
 
   public isSubscribedToField(fieldName: keyof AppState): boolean {
@@ -71,13 +67,6 @@ export abstract class AppComponent extends DomListener {
 
   public destroy() {
     this.removeDOMListeners();
-    this.unsubscribeAll();
-    this.storeSubscribtion.unsubscribe();
+    this.unsubscribers.forEach(unsubFn => unsubFn());
   }
 }
-
-// public subscribe(
-//   fn: Parameters<ReturnType<typeof createStore>["subscribe"]>[0]
-// ): void {
-//   this.storeSubscribtion = this.store.subscribe(fn);
-// }

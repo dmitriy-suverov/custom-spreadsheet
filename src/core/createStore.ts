@@ -2,6 +2,8 @@ import { Store, RootReducerType, AppState } from "./Store";
 import { DEFAULT_STYLES } from "../constants";
 
 export const DEFAULT_STATE: AppState = {
+  tableId: undefined,
+  createdAt: Date.now(),
   sizes: {
     colState: {},
     rowState: {}
@@ -15,7 +17,10 @@ export const DEFAULT_STATE: AppState = {
 
 export function createStore(
   rootReducer: RootReducerType,
+  tableId: number,
   initialState: AppState = DEFAULT_STATE
 ) {
-  return Store.getInstance(rootReducer, initialState);
+  const state = { ...initialState };
+  state.tableId = tableId;
+  return Store.getInstance(rootReducer, state);
 }

@@ -11,8 +11,11 @@ export function getFromStorage<T = any>(key: string): T {
 }
 
 export function setToStorage(key: string, value: any): void {
-  console.log("functionsetToStorage -> key", key, value);
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function removeFromStorage(key: string) {
+  localStorage.removeItem(key);
 }
 
 export function isEqual(first: any, second: any): boolean {
@@ -27,7 +30,6 @@ export function camelToDashCase(str: string): string {
 }
 
 export function debounce(fn: any, timeout: number): () => void {
-  console.log("fn", fn);
   let timer;
   return function(...args) {
     const later = () => {

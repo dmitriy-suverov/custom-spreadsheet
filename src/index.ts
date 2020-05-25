@@ -8,24 +8,16 @@ import { createStore } from "./core/createStore";
 import { rootReducer } from "./redux/rootReducer";
 import { setToStorage, getFromStorage, debounce } from "./core/utils";
 import { Store, AppState } from "./core/Store";
+import { Router } from "./core/routes/Router";
+import { DashboardPage } from "./pages/dashboard.page";
+import { ExcelPage } from "./pages/excel.page";
 
-const loadedState = getFromStorage(Store.STORAGE_KEY);
-let store;
-if (loadedState) {
-  store = createStore(rootReducer, loadedState);
-} else {
-  store = createStore(rootReducer);
-}
 
-(store as Store).subscribe(
-  debounce((state: AppState) => setToStorage(Store.STORAGE_KEY, state), 300)
-);
 
-const excel = new App("#app", {
-  components: [Header, Toolbar, Formula, Table],
-  store
-});
-excel.run();
+new Router("#app", {
+  dashboard: DashboardPage,
+  excel: ExcelPage
+}).run()
 
 // setTimeout(() => {
 //   excel.exit();

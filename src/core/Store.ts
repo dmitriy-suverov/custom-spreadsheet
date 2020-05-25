@@ -17,6 +17,8 @@ export type RootReducerType<T = AppAction> = (
 ) => Record<keyof AppState, any>;
 
 export type AppState = {
+  tableId: number;
+  createdAt: number;
   sizes: {
     colState: { [key: string]: number };
     rowState: { [key: string]: number };
@@ -35,7 +37,7 @@ export type AppState = {
 };
 
 export class Store {
-  public static STORAGE_KEY = "sheetsjs-state";
+  public static STORAGE_KEY = "excel-table";
   private state: AppState;
   private readonly listeners: Function[] = [];
 
@@ -46,6 +48,9 @@ export class Store {
     initialState: AppState
   ) {
     this.state = rootReducer({ ...initialState }, initAction);
+    if (!this.state.tableId) {
+      throw new Error("tableId must be provided");
+    }
   }
 
   public static getInstance(
@@ -64,7 +69,9 @@ export class Store {
 
     return {
       unsubscribe() {
-        this.listeners = this.listeners.filter(listener => listener !== fn);
+        this.listeners = (this.listeners || []).filter(
+          listener => listener !== fn
+        );
       }
     };
   }
