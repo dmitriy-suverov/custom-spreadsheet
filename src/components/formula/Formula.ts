@@ -1,6 +1,6 @@
 import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $, Dom } from "../../core/dom";
-import { AppState } from "../../core/Store";
+import { AppState } from "../../core/store/Store";
 
 export type FORMULA_EVENTS = "formula:input" | "formula:end-of-input";
 

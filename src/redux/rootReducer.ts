@@ -1,4 +1,4 @@
-import { AppAction, AppState } from "../core/Store";
+import { AppAction, AppState } from "../core/store/Store";
 import {
   resizeAction,
   changeTextAction

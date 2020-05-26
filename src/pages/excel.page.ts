@@ -1,8 +1,7 @@
 import { Page } from "../core/routes/Page";
 import { debounce, getFromStorage, setToStorage } from "../core/utils";
-import { createStore } from "../core/createStore";
-import { Store, AppState } from "../core/Store";
-import { rootReducer } from "../redux/rootReducer";
+import { createStore } from "../core/store/create-store";
+import { Store, AppState } from "../core/store/Store";
 import { App } from "../components/app/App";
 import { Header } from "../components/header/Header";
 import { Toolbar } from "../components/toolbar/Toolbar";
@@ -13,7 +12,6 @@ import { Table } from "../components/table/Table";
 export class ExcelPage extends Page {
   public constructor(private readonly tableId: number) {
     super();
-    console.log("ExcelPage -> constructor -> tableId", this.tableId);
   }
 
   private component: App;
@@ -21,12 +19,11 @@ export class ExcelPage extends Page {
   init() {
     const loadedState = getFromStorage(this.composeStorageKey());
 
-    console.log("ExcelPage -> init -> loadedState", loadedState);
     let store: Store;
     if (loadedState) {
-      store = createStore(rootReducer, this.tableId, loadedState);
+      store = createStore(this.tableId, loadedState);
     } else {
-      store = createStore(rootReducer, this.tableId);
+      store = createStore(this.tableId);
     }
 
     (store as Store).subscribe(
@@ -35,6 +32,8 @@ export class ExcelPage extends Page {
         300
       )
     );
+
+    store.subscribe(state => console.log("state", state));
 
     this.component = new App(this.tableId, {
       components: [Header, Toolbar, Formula, Table],

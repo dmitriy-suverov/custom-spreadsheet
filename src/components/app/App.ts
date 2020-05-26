@@ -1,7 +1,7 @@
 import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
 import { $ } from "../../core/dom";
 import { Emmiter as AppEmitter } from "../../core/Emitter";
-import { Store } from "../../core/Store";
+import { Store } from "../../core/store/Store";
 import { StoreSubscriber } from "../../core/StoreSubscriber";
 
 // evaluates type as Class itself, not instance of T

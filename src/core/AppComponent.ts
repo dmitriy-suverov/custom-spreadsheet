@@ -1,9 +1,7 @@
 import { DomListener } from "./DomListener";
 import { Dom } from "./dom";
-import { Type } from "../components/app/App";
 import { Emmiter, AppEvents } from "./Emitter";
-import { AppAction, Store, AppState } from "./Store";
-import { createStore } from "./createStore";
+import { AppAction, Store, AppState } from "./store/Store";
 
 export interface AppComponentOptions {
   name?: string;
@@ -19,7 +17,6 @@ export abstract class AppComponent extends DomListener {
   private readonly emitter: Emmiter;
   private readonly unsubscribers: Function[] = [];
   protected readonly store: Store;
-  private storeSubscribtion: ReturnType<Store["subscribe"]>;
   private readonly _subscribeToStoreFields: (keyof AppState)[];
 
   public constructor($root: Dom, options: AppComponentOptions) {
@@ -54,6 +51,7 @@ export abstract class AppComponent extends DomListener {
   }
 
   storeChanged(changes) {
+    // todo remove
     console.debug("AppComponent -> storeChanged -> changes", changes);
   }
 
