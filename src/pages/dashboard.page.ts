@@ -1,6 +1,6 @@
 import { Page } from "../core/routes/Page";
 import { $, Dom } from "../core/dom";
-import { Store, AppState } from "../core/Store";
+import { Store, AppState } from "../core/store/Store";
 import { getFromStorage } from "../core/utils";
 
 export class DashboardPage extends Page {

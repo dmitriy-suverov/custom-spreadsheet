@@ -1,5 +1,6 @@
 import { Store, RootReducerType, AppState } from "./Store";
-import { DEFAULT_STYLES } from "../constants";
+import { DEFAULT_STYLES } from "../../constants";
+import { rootReducer } from "../../redux/rootReducer";
 
 export const DEFAULT_STATE: AppState = {
   tableId: undefined,
@@ -16,7 +17,6 @@ export const DEFAULT_STATE: AppState = {
 };
 
 export function createStore(
-  rootReducer: RootReducerType,
   tableId: number,
   initialState: AppState = DEFAULT_STATE
 ) {

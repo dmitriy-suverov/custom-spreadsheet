@@ -5,14 +5,12 @@ import { Page } from "./Page";
 type PageConstructor = new (...args: any[]) => Page;
 
 export class Router {
-  private readonly mountNode: Dom;
   private currentPage: Page;
 
   public constructor(
-    mountNodeSelector: string,
+    private readonly mountNode: Dom,
     private readonly routes: Record<string, PageConstructor>
   ) {
-    this.mountNode = $(mountNodeSelector);
     this.init();
   }
 
@@ -22,17 +20,21 @@ export class Router {
 
   private changePageHandler = () => {
     this.currentPage && this.currentPage.destroy();
-    this.renderCurrentPage();
+    this.renderAndInitCurrentPage();
   };
 
-  private renderCurrentPage() {
+  private renderAndInitCurrentPage() {
     const PageComponent = ActiveRoute.path.includes("excel")
       ? this.routes.excel
       : this.routes.dashboard;
     this.currentPage = new PageComponent(ActiveRoute.param);
-    this.mountNode.$el.innerHTML = "";
-    this.mountNode.append(this.currentPage.getRoot());
+    this.renderPage(this.currentPage);
     this.currentPage.afterRender();
+  }
+
+  private renderPage(page: Page) {
+    this.mountNode.$el.innerHTML = "";
+    this.mountNode.append(page.getRoot());
   }
 
   destroy() {
@@ -40,6 +42,6 @@ export class Router {
   }
 
   public run() {
-    this.renderCurrentPage();
+    this.renderAndInitCurrentPage();
   }
 }

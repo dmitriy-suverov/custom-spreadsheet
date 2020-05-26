@@ -1,4 +1,4 @@
-import { AppState } from "../../core/Store";
+import { AppState } from "../../core/store/Store";
 import { DEFAULT_STYLES } from "../../constants";
 import { camelToDashCase } from "../../core/utils";
 import { CellParser } from "../../core/CellParser";

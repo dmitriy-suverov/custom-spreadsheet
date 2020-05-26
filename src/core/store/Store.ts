@@ -1,6 +1,6 @@
-import { TABLE_ACTIONS } from "../components/table/table.actions";
-import { HEADER_ACTIONS } from "../components/header/header.actions";
-import { TOOLBAR_ACTIONS } from "../redux/actions";
+import { TABLE_ACTIONS } from "../../components/table/table.actions";
+import { HEADER_ACTIONS } from "../../components/header/header.actions";
+import { TOOLBAR_ACTIONS } from "../../redux/actions";
 
 export interface AppAction {
   type: "__INIT__" | TABLE_ACTIONS | HEADER_ACTIONS | TOOLBAR_ACTIONS;
@@ -39,7 +39,7 @@ export type AppState = {
 export class Store {
   public static STORAGE_KEY = "excel-table";
   private state: AppState;
-  private readonly listeners: Function[] = [];
+  private listeners: Function[] = [];
 
   private static instance: Store;
 
@@ -48,6 +48,8 @@ export class Store {
     initialState: AppState
   ) {
     this.state = rootReducer({ ...initialState }, initAction);
+    // console.log("Store -> initialState", initialState);
+    // console.log("Store -> state", this.state);
     if (!this.state.tableId) {
       throw new Error("tableId must be provided");
     }
@@ -68,10 +70,10 @@ export class Store {
     this.listeners.push(fn);
 
     return {
-      unsubscribe() {
-        this.listeners = (this.listeners || []).filter(
-          listener => listener !== fn
-        );
+      unsubscribe: () => {
+        this.listeners = (this.listeners || []).filter(listener => {
+          return listener !== fn;
+        });
       }
     };
   }
@@ -79,7 +81,7 @@ export class Store {
     this.state = this.rootReducer({ ...this.state }, action);
     this.listeners.forEach(listener => listener(this.state));
   }
-  getState() {
+  getState(): AppState {
     return JSON.parse(JSON.stringify(this.state));
   }
 }
