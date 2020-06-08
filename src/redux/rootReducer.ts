@@ -1,10 +1,11 @@
-import { AppAction, AppState } from "../core/store/Store";
+import { AppAction } from "../core/store/Store";
 import {
   resizeAction,
   changeTextAction
 } from "../components/table/table.actions";
 import { renameTableAction } from "../components/header/header.actions";
 import { currentStylesAction, applyStyleAction } from "./actions";
+import { AppState } from "../core/store/app-state.interface";
 
 export function rootReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
@@ -32,12 +33,12 @@ export function rootReducer(state: AppState, action: AppAction): AppState {
     case "CHANGE_TEXT": {
       const newState = { ...state };
       const data = (action as ReturnType<typeof changeTextAction>).payload;
-      console.log("functionrootReducer -> data", data)
+      console.log("functionrootReducer -> data", data);
       newState.cellData = {
         ...state.cellData,
         ...data
       };
-      console.log("functionrootReducer -> cellData", newState.cellData)
+      console.log("functionrootReducer -> cellData", newState.cellData);
       const key = Object.keys(data)[0];
       newState.currentText = data[key];
 

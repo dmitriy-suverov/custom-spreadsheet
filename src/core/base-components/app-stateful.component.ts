@@ -1,4 +1,4 @@
-import { AppComponent } from "./AppComponent";
+import { AppComponent } from "./app.component";
 
 export abstract class AppStatefulComponent<T extends {}> extends AppComponent {
   protected state: T;

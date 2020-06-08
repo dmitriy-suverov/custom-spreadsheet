@@ -1,7 +1,7 @@
-import { AppState } from "../../core/store/Store";
 import { DEFAULT_STYLES } from "../../constants";
 import { camelToDashCase } from "../../core/utils";
 import { CellParser } from "../../core/CellParser";
+import { AppState } from "../../core/store/app-state.interface";
 
 const codes = {
   A: 65,

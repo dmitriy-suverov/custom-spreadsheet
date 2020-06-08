@@ -1,4 +1,4 @@
-import { FORMULA_EVENTS } from "../components/formula/Formula";
+import { FORMULA_EVENTS } from "../components/formula/formula.component";
 import { TABLE_EVENTS } from "../components/table/Table";
 
 export type AppEvents = FORMULA_EVENTS | TABLE_EVENTS | "toolbar:applyStyle";

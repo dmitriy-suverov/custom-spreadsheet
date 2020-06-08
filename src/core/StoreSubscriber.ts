@@ -1,7 +1,7 @@
-import { Store, AppState } from "./store/Store";
-import { AppComponent } from "./AppComponent";
+import { Store } from "./store/Store";
+import { AppComponent } from "./base-components/app.component";
 import { isEqual } from "./utils";
-import { DEFAULT_STATE } from "./store/create-store";
+import { AppState } from "./store/app-state.interface";
 
 export class StoreSubscriber {
   private sub = null;

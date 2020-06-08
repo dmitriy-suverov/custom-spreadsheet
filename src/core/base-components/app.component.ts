@@ -1,7 +1,8 @@
-import { DomListener } from "./DomListener";
-import { Dom } from "./dom";
-import { Emmiter, AppEvents } from "./Emitter";
-import { AppAction, Store, AppState } from "./store/Store";
+import { DomListener } from "../DomListener";
+import { Dom } from "../dom";
+import { Emmiter, AppEvents } from "../Emitter";
+import { AppAction, Store } from "../store/Store";
+import { AppState } from "../store/app-state.interface";
 
 export interface AppComponentOptions {
   name?: string;

@@ -1,7 +1,8 @@
-import { Page } from "../core/routes/Page";
+import { Page } from "../core/routing/page";
 import { $, Dom } from "../core/dom";
-import { Store, AppState } from "../core/store/Store";
+import { Store } from "../core/store/Store";
 import { getFromStorage } from "../core/utils";
+import { AppState } from "../core/store/app-state.interface";
 
 export class DashboardPage extends Page {
   getRoot(): Dom {

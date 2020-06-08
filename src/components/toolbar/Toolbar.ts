@@ -1,7 +1,7 @@
-import { AppComponentOptions } from "../../core/AppComponent";
+import { AppComponentOptions } from "../../core/base-components/app.component";
 import { Dom } from "../../core/dom";
 import { createToolbar } from "./toolbar.template";
-import { AppStatefulComponent } from "../../core/AppStatefulComponent";
+import { AppStatefulComponent } from "../../core/base-components/app-stateful.component";
 import { DEFAULT_STYLES } from "../../constants";
 
 type State = typeof DEFAULT_STYLES;

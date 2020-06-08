@@ -1,4 +1,4 @@
-import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/base-components/app.component";
 import { $, Dom } from "../../core/dom";
 import { createTable, getCellId } from "./table.template";
 import { resizeHandler } from "./table.resize";

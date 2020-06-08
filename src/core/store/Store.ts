@@ -1,6 +1,8 @@
 import { TABLE_ACTIONS } from "../../components/table/table.actions";
 import { HEADER_ACTIONS } from "../../components/header/header.actions";
 import { TOOLBAR_ACTIONS } from "../../redux/actions";
+import { AppState } from "./app-state.interface";
+import { RootReducerType } from "./root-reducer";
 
 export interface AppAction {
   type: "__INIT__" | TABLE_ACTIONS | HEADER_ACTIONS | TOOLBAR_ACTIONS;
@@ -9,31 +11,6 @@ export interface AppAction {
 
 const initAction: AppAction = {
   type: "__INIT__"
-};
-
-export type RootReducerType<T = AppAction> = (
-  state: Record<keyof AppState, any>,
-  action: T
-) => Record<keyof AppState, any>;
-
-export type AppState = {
-  tableId: number;
-  createdAt: number;
-  sizes: {
-    colState: { [key: string]: number };
-    rowState: { [key: string]: number };
-  };
-  cellData: { [key: string]: string };
-  currentText: string;
-  currentStyles: {
-    [key in keyof CSSStyleDeclaration]?: string;
-  };
-  tableName: string;
-  stylesState: {
-    [cellId: string]: {
-      [styleName in keyof CSSStyleDeclaration]?: string;
-    };
-  };
 };
 
 export class Store {
@@ -48,8 +25,6 @@ export class Store {
     initialState: AppState
   ) {
     this.state = rootReducer({ ...initialState }, initAction);
-    // console.log("Store -> initialState", initialState);
-    // console.log("Store -> state", this.state);
     if (!this.state.tableId) {
       throw new Error("tableId must be provided");
     }

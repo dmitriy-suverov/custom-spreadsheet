@@ -1,5 +1,6 @@
 import { createStore, DEFAULT_STATE } from "../create-store";
-import { AppState, Store, AppAction } from "../Store";
+import { Store, AppAction } from "../Store";
+import { AppState } from "../app-state.interface";
 
 describe("createStore", () => {
   const tableId: number = 12;

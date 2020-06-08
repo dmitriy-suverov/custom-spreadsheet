@@ -1,4 +1,4 @@
-import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/base-components/app.component";
 import { $ } from "../../core/dom";
 import { Emmiter as AppEmitter } from "../../core/Emitter";
 import { Store } from "../../core/store/Store";
@@ -14,7 +14,7 @@ interface AppOptions {
   store: Store;
 }
 
-export class App {
+export class Editor {
   private readonly components: Type<AppComponent>[];
   private componentsInstances: AppComponent[];
   private readonly emmiter: AppEmitter;
@@ -24,7 +24,7 @@ export class App {
   private static tableId: number;
 
   public static get tableStorageKey(): string {
-    return `${Store.STORAGE_KEY}/${App.tableId}`;
+    return `${Store.STORAGE_KEY}/${Editor.tableId}`;
   }
 
   constructor(tableId: number, options: AppOptions) {
@@ -32,7 +32,7 @@ export class App {
     this.store = options.store;
     this.emmiter = new AppEmitter();
     this.subsriber = new StoreSubscriber(this.store);
-    App.tableId = tableId;
+    Editor.tableId = tableId;
   }
 
   getRoot() {
@@ -59,8 +59,7 @@ export class App {
     this.componentsInstances.forEach(instance => instance.init());
   }
 
-  // todo rename
-  public onDestroy() {
+  public destroy() {
     this.componentsInstances.forEach(instance => instance.destroy());
     this.subsriber.unsubscrubeFromStore();
   }

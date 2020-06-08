@@ -1,12 +1,13 @@
-import { Page } from "../core/routes/Page";
+import { Page } from "../core/routing/page";
 import { debounce, getFromStorage, setToStorage } from "../core/utils";
 import { createStore } from "../core/store/create-store";
-import { Store, AppState } from "../core/store/Store";
-import { App } from "../components/app/App";
+import { Store } from "../core/store/Store";
+import { Editor } from "../components/editor/editor.component";
 import { Header } from "../components/header/Header";
 import { Toolbar } from "../components/toolbar/Toolbar";
-import { Formula } from "../components/formula/Formula";
+import { Formula } from "../components/formula/formula.component";
 import { Table } from "../components/table/Table";
+import { AppState } from "../core/store/app-state.interface";
 
 // todo rename excel class
 export class ExcelPage extends Page {
@@ -14,7 +15,8 @@ export class ExcelPage extends Page {
     super();
   }
 
-  private component: App;
+  private component: Editor;
+  private storeSub: ReturnType<Store["subscribe"]>;
 
   init() {
     const loadedState = getFromStorage(this.composeStorageKey());
@@ -26,7 +28,7 @@ export class ExcelPage extends Page {
       store = createStore(this.tableId);
     }
 
-    (store as Store).subscribe(
+    this.storeSub = (store as Store).subscribe(
       debounce(
         (state: AppState) => setToStorage(this.composeStorageKey(), state),
         300
@@ -35,7 +37,7 @@ export class ExcelPage extends Page {
 
     store.subscribe(state => console.log("state", state));
 
-    this.component = new App(this.tableId, {
+    this.component = new Editor(this.tableId, {
       components: [Header, Toolbar, Formula, Table],
       store
     });
@@ -55,6 +57,7 @@ export class ExcelPage extends Page {
   }
 
   destroy() {
-    this.component.onDestroy();
+    this.component.destroy();
+    this.storeSub.unsubscribe();
   }
 }

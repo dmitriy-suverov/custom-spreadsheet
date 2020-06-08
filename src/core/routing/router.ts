@@ -1,6 +1,6 @@
-import { $, Dom } from "../dom";
-import { ActiveRoute } from "./ActiveRoute";
-import { Page } from "./Page";
+import { Dom } from "../dom";
+import { ActiveRouteService } from "./active-route.service";
+import { Page } from "./page";
 
 type PageConstructor = new (...args: any[]) => Page;
 
@@ -24,10 +24,10 @@ export class Router {
   };
 
   private renderAndInitCurrentPage() {
-    const PageComponent = ActiveRoute.path.includes("excel")
+    const PageComponent = ActiveRouteService.path.includes("excel")
       ? this.routes.excel
       : this.routes.dashboard;
-    this.currentPage = new PageComponent(ActiveRoute.param);
+    this.currentPage = new PageComponent(ActiveRouteService.param);
     this.renderPage(this.currentPage);
     this.currentPage.afterRender();
   }

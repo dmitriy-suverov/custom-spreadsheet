@@ -1,6 +1,7 @@
-import { Store, RootReducerType, AppState } from "./Store";
+import { Store } from "./Store";
 import { DEFAULT_STYLES } from "../../constants";
 import { rootReducer } from "../../redux/rootReducer";
+import { AppState } from "./app-state.interface";
 
 export const DEFAULT_STATE: AppState = {
   tableId: undefined,

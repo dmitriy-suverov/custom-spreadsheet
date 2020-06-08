@@ -1,8 +1,8 @@
-import { Router } from "../Router";
+import { Router } from "../router";
 import { ExcelPage } from "../../../pages/excel.page";
 import { $, Dom } from "../../dom";
 import { DashboardPage } from "../../../pages/dashboard.page";
-import { ActiveRoute } from "../ActiveRoute";
+import { ActiveRouteService } from "../active-route.service";
 
 class ExcelTestPage extends ExcelPage {
   getRoot() {

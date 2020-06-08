@@ -1,8 +1,8 @@
-import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import { AppComponent, AppComponentOptions } from "../../core/base-components/app.component";
 import { Dom } from "../../core/dom";
 import { renameTableAction } from "./header.actions";
-import { ActiveRoute } from "../../core/routes/ActiveRoute";
-import { App } from "../app/App";
+import { ActiveRouteService } from "../../core/routing/active-route.service";
+import { Editor } from "../editor/editor.component";
 
 export class Header extends AppComponent {
   static className = "excel__header";
@@ -29,15 +29,15 @@ export class Header extends AppComponent {
         console.log("Header -> onClick -> delete");
         const shouldProceed = confirm("Do you realy want to delete the table?");
         if (shouldProceed) {
-          localStorage.removeItem(App.tableStorageKey);
-          ActiveRoute.navigate("dashboard");
+          localStorage.removeItem(Editor.tableStorageKey);
+          ActiveRouteService.navigate("dashboard");
         }
         break;
       }
       case "exit": {
         console.log("Header -> onClick -> exit");
 
-        ActiveRoute.navigate("dashboard");
+        ActiveRouteService.navigate("dashboard");
         break;
       }
     }

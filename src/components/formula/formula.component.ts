@@ -1,6 +1,9 @@
-import { AppComponent, AppComponentOptions } from "../../core/AppComponent";
+import {
+  AppComponent,
+  AppComponentOptions
+} from "../../core/base-components/app.component";
 import { $, Dom } from "../../core/dom";
-import { AppState } from "../../core/store/Store";
+import { AppState } from "../../core/store/app-state.interface";
 
 export type FORMULA_EVENTS = "formula:input" | "formula:end-of-input";
 
@@ -55,12 +58,6 @@ export class Formula extends AppComponent {
   }
 
   public isSubscribedToField(fieldName: keyof AppState): boolean {
-    // console.log(
-    //   "AppComponent -> isSubscribedToField -> this.fieldsToSubscribeInStore.includes(fieldName)",
-    //   this.name,
-    //   fieldName,
-    //   this.fieldsToSubscribeInStore.includes(fieldName)
-    // );
     return this.fieldsToSubscribeInStore.includes(fieldName);
   }
 }
